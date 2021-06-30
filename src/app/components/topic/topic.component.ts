@@ -9,6 +9,8 @@ import { User } from 'src/app/models/User';
 import { MessagesService } from 'src/app/services/MessagesService';
 import { TopicsService } from 'src/app/services/TopicsService';
 import { UsersService } from 'src/app/services/UsersService';
+import { DialogConfirmComponent } from 'src/app/dialogs/dialog-confirm.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'topic',
@@ -24,16 +26,20 @@ export class TopicComponent implements OnInit, OnDestroy {
     connectedUser: User;
     connectedUserSubscription: Subscription;
 
+    dialogRefSubscription: Subscription;
+
     constructor(
         private formBuilder: FormBuilder,
         private usersService: UsersService,
         private topicsService: TopicsService,
         private messagesService: MessagesService,
         private route: ActivatedRoute,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
+        this.usersService.emitConnectedUser();
         this.topicSubscription = this.topicsService.getTopic(this.route.snapshot.params['id']).subscribe((topic: Topic) => {
             topic.date = new Date(topic.date);
 
@@ -53,7 +59,8 @@ export class TopicComponent implements OnInit, OnDestroy {
             this.connectedUser = user;
         });
 
-        this.usersService.emitConnectedUser();
+        this.connectedUser=JSON.parse(localStorage.getItem("connectedUser")!)    
+ 
     }
 
     onRefreshMessages(): void {
@@ -107,6 +114,29 @@ export class TopicComponent implements OnInit, OnDestroy {
         }
     }
 
+    deleteMessage(message: Message): void{
+        const dialogRef = this.dialog.open(DialogConfirmComponent, {
+            data: {
+              title: 'Êtes-vous sûr de vouloir supprimer ce message ?',
+              content: 'Cette action est irréversible.',
+              action: 'Supprimer'
+            },
+            autoFocus: false
+          });
+      
+          this.dialogRefSubscription = dialogRef.afterClosed().subscribe(confirm => {
+            if (confirm) {
+              this.messagesService.deleteMessage(message).subscribe(response => {          
+                
+                this.snackBar.open('Le message a bien été supprimé', 'Fermer', { duration: 3000 });
+                this.messagesService.emitMessages();
+                
+              }, error => {
+                this.snackBar.open('Une erreur est survenue. Veuillez vérifier votre saisie', 'Fermer', { duration: 3000 });
+              });
+            }
+          });
+    }
     ngOnDestroy(): void {
         if (this.connectedUserSubscription) {
             this.connectedUserSubscription.unsubscribe();

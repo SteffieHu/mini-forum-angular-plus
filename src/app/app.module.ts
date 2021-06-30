@@ -39,7 +39,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -65,7 +64,7 @@ import { MatDialogModule } from '@angular/material/dialog';
         MatCheckboxModule,
         MatButtonModule,
         MatSnackBarModule,
-        MatDialogModule
+        MatDialogModule,
     ],
     providers: [
         UsersService,

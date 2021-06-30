@@ -9,8 +9,12 @@
     <ul>
         <li *ngFor="let message of topic.messages">
             <h3>{{ message | messageInfos }}</h3>
-    
+            
             <p>{{ message.content }}</p>
+
+            <button mat-raised-button color="primary" *ngIf="connectedUser.id===message.author.id|| connectedUser.isAdmin===true || connectedUser.admin===true"
+                    (click)="deleteMessage(message)">Supprimer</button>
+                
         </li>
     </ul>
 </div>
