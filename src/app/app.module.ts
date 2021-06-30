@@ -17,6 +17,7 @@ import { LoginComponent } from './components/login/login.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { TopicComponent } from './components/topic/topic.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
 
 /* Dialogs */
 import { DialogConfirmComponent } from './dialogs/dialog-confirm.component';
@@ -38,6 +39,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -49,7 +51,8 @@ import { MatDialogModule } from '@angular/material/dialog';
         TopicComponent,
         TopicInfosPipe,
         MessageInfosPipe,
-        DialogConfirmComponent
+        DialogConfirmComponent,
+        UserManagementComponent
     ],
     imports: [
         BrowserModule,

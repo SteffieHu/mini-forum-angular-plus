@@ -1,0 +1,24 @@
+mat-form-field, button {
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li:not(li:last-child) {
+    margin-bottom: var(--small-margin);
+}
+
+li mat-form-field {
+    max-width: 40% !important;
+    max-height: 36px;
+    top: -11px;
+}

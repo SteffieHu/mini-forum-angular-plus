@@ -1,0 +1,26 @@
+<!-- <p>user-management works!</p> -->
+
+<section>
+    <ul>
+        <li *ngFor="let user of filteredUsers " class="user">{{user.username}}
+            <mat-form-field *ngIf="editedUser === user ">
+                <mat-label>Username</mat-label>
+                <input type="text" matInput required [formControl]="editUserControl">
+            </mat-form-field>
+
+            <mat-checkbox color="primary" *ngIf="editedUser === user" [formControl]="roleAdmin">Administrateur
+            </mat-checkbox>
+
+            <div class="action-buttons-container">
+                <button mat-raised-button color="primary" *ngIf="editedUser !== user"
+                    (click)="onChangeEditedUser(user)">Modifier</button>
+                <button mat-raised-button color="accent" *ngIf="editedUser === user"
+                    (click)="onEditUser(user)">Enregistrer</button>
+                <button mat-raised-button color="warn" (click)="onDeleteUser(user)">Supprimer</button>
+            </div>
+
+
+        </li>
+
+    </ul>
+</section>
