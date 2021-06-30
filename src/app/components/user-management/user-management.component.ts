@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { UsersService } from 'src/app/services/UsersService';
@@ -58,6 +57,14 @@ export class UserManagementComponent implements OnInit {
 
     this.connectedUser= JSON.parse(localStorage.getItem("connectedUser")!);
     
+    this.filterControl = this.formBuilder.control("");
+    this.filterControl.valueChanges.subscribe(filterValue => {
+      if(filterValue){
+        this.filteredUsers = this.users.filter(user => user.username.includes(filterValue));
+      } else {
+        this.filteredUsers = this.users;
+      }
+    })
   }
 
   onChangeEditedUser(user: User): void {

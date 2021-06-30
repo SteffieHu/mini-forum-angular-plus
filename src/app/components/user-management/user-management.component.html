@@ -1,6 +1,10 @@
-<!-- <p>user-management works!</p> -->
-
 <section>
+
+    <mat-form-field>
+        <mat-label>Chercher un user</mat-label>
+        <input type="text" matInput [formControl]="filterControl">
+    </mat-form-field>
+
     <ul>
         <li *ngFor="let user of filteredUsers " class="user">{{user.username}}
             <mat-form-field *ngIf="editedUser === user ">
