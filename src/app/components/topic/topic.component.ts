@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -27,6 +27,7 @@ export class TopicComponent implements OnInit, OnDestroy {
     connectedUserSubscription: Subscription;
 
     dialogRefSubscription: Subscription;
+    editMessage: FormControl;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -38,6 +39,12 @@ export class TopicComponent implements OnInit, OnDestroy {
         private dialog: MatDialog
     ) { }
 
+    onChangeEditedMessage(message: Message): void {
+
+    }
+    onEditMessage(message: Message): void {
+
+    }
     ngOnInit(): void {
         this.usersService.emitConnectedUser();
         this.topicSubscription = this.topicsService.getTopic(this.route.snapshot.params['id']).subscribe((topic: Topic) => {
@@ -47,7 +54,7 @@ export class TopicComponent implements OnInit, OnDestroy {
                 message.date = new Date(message.date);
                 return message;
             });
-            
+
             this.topic = topic;
         });
 
@@ -59,8 +66,8 @@ export class TopicComponent implements OnInit, OnDestroy {
             this.connectedUser = user;
         });
 
-        this.connectedUser=JSON.parse(localStorage.getItem("connectedUser")!)    
- 
+        this.connectedUser = JSON.parse(localStorage.getItem("connectedUser")!)
+
     }
 
     onRefreshMessages(): void {
@@ -87,16 +94,16 @@ export class TopicComponent implements OnInit, OnDestroy {
                 author: this.connectedUser,
                 topic: this.topic
             }
-    
+
             this.messagesService.postNewMessage(message).subscribe((message: Message) => {
                 this.topicsService.getTopic(this.topic.id!).subscribe((topic: Topic) => {
                     topic.date = new Date(topic.date);
-        
+
                     topic.messages = topic.messages.map((message: Message) => {
                         message.date = new Date(message.date);
                         return message;
                     });
-        
+
                     this.topic = topic;
                     this.topicsService.emitTopics();
 
@@ -114,28 +121,28 @@ export class TopicComponent implements OnInit, OnDestroy {
         }
     }
 
-    deleteMessage(message: Message): void{
+    deleteMessage(message: Message): void {
         const dialogRef = this.dialog.open(DialogConfirmComponent, {
             data: {
-              title: 'Êtes-vous sûr de vouloir supprimer ce message ?',
-              content: 'Cette action est irréversible.',
-              action: 'Supprimer'
+                title: 'Êtes-vous sûr de vouloir supprimer ce message ?',
+                content: 'Cette action est irréversible.',
+                action: 'Supprimer'
             },
             autoFocus: false
-          });
-      
-          this.dialogRefSubscription = dialogRef.afterClosed().subscribe(confirm => {
+        });
+
+        this.dialogRefSubscription = dialogRef.afterClosed().subscribe(confirm => {
             if (confirm) {
-              this.messagesService.deleteMessage(message).subscribe(response => {          
-                
-                this.snackBar.open('Le message a bien été supprimé', 'Fermer', { duration: 3000 });
-                this.messagesService.emitMessages();
-                
-              }, error => {
-                this.snackBar.open('Une erreur est survenue. Veuillez vérifier votre saisie', 'Fermer', { duration: 3000 });
-              });
+                this.messagesService.deleteMessage(message).subscribe(response => {
+
+                    this.snackBar.open('Le message a bien été supprimé', 'Fermer', { duration: 3000 });
+                    this.messagesService.emitMessages();
+                    this.onRefreshMessages();
+                }, error => {
+                    this.snackBar.open('Une erreur est survenue. Veuillez vérifier votre saisie', 'Fermer', { duration: 3000 });
+                });
             }
-          });
+        });
     }
     ngOnDestroy(): void {
         if (this.connectedUserSubscription) {
@@ -147,7 +154,7 @@ export class TopicComponent implements OnInit, OnDestroy {
         }
     }
 
-    getErrorMessage(formControlName: string): string|void {
+    getErrorMessage(formControlName: string): string | void {
         if (this.form.controls[formControlName].hasError('required')) {
             return 'Ce champ est obligatoire';
         }
